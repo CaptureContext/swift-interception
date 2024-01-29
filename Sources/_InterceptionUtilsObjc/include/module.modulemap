@@ -1,0 +1,4 @@
+module _InterceptionUtilsObjc {
+	umbrella header "ObjcRuntimeAliases.h"
+	export *
+}
