@@ -27,11 +27,11 @@ extension NSObject {
 	///  - action: Action to perform when `selector` was triggered
 	public func setInterceptionHandler(
 		for selector: Selector,
-		key: AnyHashable = "__default",
+		key: AnyHashable = "__default_handler__",
 		action: ((InterceptionResult<Any, Any>) -> Void)?
 	) {
 		let handler = _intercept(selector)
-		handler.register(action, for: key)
+		handler.register(action.map(SimpleInterceptionHandler.init), for: key)
 	}
 
 	/// Sets interception handler, which accepts ``InterceptionResult`` containing a tuple
@@ -56,17 +56,19 @@ extension NSObject {
 		}
 
 		handler.register(
-			{
+			SimpleInterceptionHandler {
 				action($0.unsafeCast(
 					args: Args.self,
 					output: Output.self
-				)) },
+				))
+			},
 			for: key
 		)
 	}
 
 	/// Setup the method interception.
-	@nonobjc fileprivate func _intercept(_ selector: Selector) -> InterceptionHanlders {
+	@_spi(Internals)
+	@nonobjc public func _intercept(_ selector: Selector) -> InterceptionHandlers {
 		guard let method = class_getInstanceMethod(objcClass, selector) else {
 			fatalError(
 				"Selector `\(selector)` does not exist in class `\(String(describing: objcClass))`."
@@ -78,7 +80,7 @@ extension NSObject {
 		
 		return synchronized(self) {
 			let alias = selector.alias
-			let handlerKey = AssociationKey<InterceptionHanlders?>(alias)
+			let handlerKey = AssociationKey<InterceptionHandlers?>(alias)
 			let interopAlias = selector.interopAlias
 			
 			if let handler = associations.value(forKey: handlerKey) {
@@ -138,7 +140,7 @@ extension NSObject {
 				}
 			}
 			
-			let handler = InterceptionHanlders()
+			let handler = InterceptionHandlers()
 			associations.setValue(handler, forKey: handlerKey)
 
 			// Start forwarding the messages of the selector.
@@ -163,7 +165,7 @@ private func enableMessageForwarding(_ realClass: AnyClass, _ selectorCache: Sel
 		let interopAlias = selectorCache.interopAlias(for: selector)
 		
 		defer {
-			let handlerKey = AssociationKey<InterceptionHanlders?>(alias)
+			let handlerKey = AssociationKey<InterceptionHandlers?>(alias)
 			if let handler = objectRef.takeUnretainedValue().associations.value(forKey: handlerKey) {
 				handler(invocation)
 			}
@@ -320,18 +322,43 @@ private func setupMethodSignatureCaching(_ realClass: AnyClass, _ signatureCache
 	)
 }
 
-/// The state of an intercepted method specific to an instance.
-private final class InterceptionHanlders {
-	typealias Action = (InterceptionResult<Any, Any>) -> Void
-	private var handlers: [AnyHashable: Action] = [:]
+@_spi(Internals)
+public protocol InterceptionHandlerProtocol {
+	func handle(_ result: InterceptionResult<Any, Any>)
+}
 
-	func register(_ action: Action?, for key: AnyHashable) {
-		handlers[key] = action
+extension InterceptionHandlerProtocol {
+	@inlinable
+	public func callAsFunction(_ result: InterceptionResult<Any, Any>) {
+		self.handle(result)
+	}
+}
+
+@_spi(Internals)
+public struct SimpleInterceptionHandler: InterceptionHandlerProtocol {
+	private var _action: (InterceptionResult<Any, Any>) -> Void
+
+	init(_ action: @escaping (InterceptionResult<Any, Any>) -> Void) {
+		self._action = action
 	}
 
-	func callAsFunction(_ invocation: AnyObject) {
+	public func handle(_ result: InterceptionResult<Any, Any>) {
+		self._action(result)
+	}
+}
+
+/// The state of an intercepted method specific to an instance.
+@_spi(Internals)
+public final class InterceptionHandlers {
+	private var storage: [AnyHashable: InterceptionHandlerProtocol] = [:]
+
+	public func register(_ action: InterceptionHandlerProtocol?, for key: AnyHashable) {
+		storage[key] = action
+	}
+
+	public func callAsFunction(_ invocation: AnyObject) {
 		let unpackedInvocation = unpackInvocation(invocation)
-		handlers.values.forEach { $0(unpackedInvocation) }
+		storage.values.forEach { $0(unpackedInvocation) }
 	}
 }
 
