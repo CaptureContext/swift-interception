@@ -338,7 +338,7 @@ extension InterceptionHandlerProtocol {
 public struct SimpleInterceptionHandler: InterceptionHandlerProtocol {
 	private var _action: (InterceptionResult<Any, Any>) -> Void
 
-	init(_ action: @escaping (InterceptionResult<Any, Any>) -> Void) {
+	public init(_ action: @escaping (InterceptionResult<Any, Any>) -> Void) {
 		self._action = action
 	}
 
@@ -352,8 +352,14 @@ public struct SimpleInterceptionHandler: InterceptionHandlerProtocol {
 public final class InterceptionHandlers {
 	private var storage: [AnyHashable: InterceptionHandlerProtocol] = [:]
 
-	public func register(_ action: InterceptionHandlerProtocol?, for key: AnyHashable) {
-		storage[key] = action
+	public subscript(key: AnyHashable) -> InterceptionHandlerProtocol? {
+		set { self.storage[key] = newValue }
+		_read { yield self.storage[key] }
+		_modify { yield &self.storage[key] }
+	}
+
+	public func register(_ handler: InterceptionHandlerProtocol?, for key: AnyHashable) {
+		storage[key] = handler
 	}
 
 	public func callAsFunction(_ invocation: AnyObject) {
