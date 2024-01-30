@@ -27,11 +27,14 @@ extension NSObject {
 	///  - action: Action to perform when `selector` was triggered
 	public func setInterceptionHandler(
 		for selector: Selector,
-		key: AnyHashable = "__default_handler__",
+		key: AnyHashable? = nil,
 		action: ((InterceptionResult<Any, Any>) -> Void)?
 	) {
 		let handler = _intercept(selector)
-		handler.register(action.map(SimpleInterceptionHandler.init), for: key)
+		handler.register(
+			action.map(SimpleInterceptionHandler.init),
+			for: SwiftInterceptionDefaultInterceptionHandlerKey.unwrap(key)
+		)
 	}
 
 	/// Sets interception handler, which accepts ``InterceptionResult`` containing a tuple
@@ -45,13 +48,13 @@ extension NSObject {
 	///  - action: Action to perform when `selector` was triggered
 	public func setInterceptionHandler<Args, Output>(
 		for selector: _MethodSelector<Args, Output>,
-		key: AnyHashable = "__default",
+		key: AnyHashable? = nil,
 		action: ((InterceptionResult<Args, Output>) -> Void)?
 	) {
 		let handler = _intercept(selector.wrappedValue)
 
 		guard let action else {
-			handler.register(nil, for: key)
+			handler.register(nil, for: SwiftInterceptionDefaultInterceptionHandlerKey.unwrap(key))
 			return
 		}
 
@@ -62,7 +65,7 @@ extension NSObject {
 					output: Output.self
 				))
 			},
-			for: key
+			for: SwiftInterceptionDefaultInterceptionHandlerKey.unwrap(key)
 		)
 	}
 
@@ -320,6 +323,17 @@ private func setupMethodSignatureCaching(_ realClass: AnyClass, _ signatureCache
 		imp_implementationWithBlock(newMethodSignatureForSelector as Any),
 		ObjCMethodEncoding.methodSignatureForSelector
 	)
+}
+
+@_spi(Internals)
+public struct SwiftInterceptionDefaultInterceptionHandlerKey: Hashable {
+	public static let shared: Self = .init()
+
+	private init() {}
+
+	public static func unwrap(_ key: AnyHashable?) -> AnyHashable {
+		key ?? Self.shared as AnyHashable
+	}
 }
 
 @_spi(Internals)

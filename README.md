@@ -80,7 +80,7 @@ If you use SwiftPM for your project, you can add CombineInterception to your pac
 ```swift
 .package(
   url: "https://github.com/capturecontext/swift-interception.git", 
-  .upToNextMinor(from: "0.0.1")
+  .upToNextMinor(from: "0.1.0")
 )
 ```
 
