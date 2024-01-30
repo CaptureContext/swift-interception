@@ -10,7 +10,7 @@ Macros: [`swift-interception-macros`](https://github.com/capturecontext/swift-in
 
 ### Basic
 
-Observe any selectors on NSObject instances
+Observe selectors on NSObject instances
 
 ```swift
 import Interception
@@ -22,7 +22,7 @@ navigationController.setInterceptionHandler(
   )
 ) { result in 
   print(result.args) // `animated` flag
-  print(result.output) // popped `UIViewController?``
+  print(result.output) // popped `UIViewController?`
 }
 ```
 
