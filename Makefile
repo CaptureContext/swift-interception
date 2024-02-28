@@ -1,19 +1,24 @@
 CONFIG = debug
-PLATFORM_IOS = iOS Simulator,id=$(call udid_for,iOS 17,iPhone \d\+ Pro [^M])
+PLATFORM_IOS = iOS Simulator,id=$(call udid_for,iOS 17.2,iPhone \d\+ Pro [^M])
 PLATFORM_MACOS = macOS
 PLATFORM_MAC_CATALYST = macOS,variant=Mac Catalyst
 PLATFORM_TVOS = tvOS Simulator,id=$(call udid_for,tvOS 17,TV)
 PLATFORM_WATCHOS = watchOS Simulator,id=$(call udid_for,watchOS 10,Watch)
 
-default: test
+default: test-all
+
+test-all:
+	$(MAKE) test
+	$(MAKE) test-docs
 
 test:
 	$(MAKE) CONFIG=debug test-library
-	$(MAKE) test-docs
+	$(MAKE) CONFIG=debug test-library-macros
+	$(MAKE) test-macros
 
 test-library:
 	for platform in "$(PLATFORM_IOS)" "$(PLATFORM_MACOS)" "$(PLATFORM_MAC_CATALYST)" "$(PLATFORM_TVOS)" "$(PLATFORM_WATCHOS)"; do \
-		echo "\nTesting Library on $$platform\n" && \
+		echo "\nTesting library on $$platform\n" && \
 		(xcodebuild test \
 			-skipMacroValidation \
 			-configuration $(CONFIG) \
@@ -23,6 +28,30 @@ test-library:
 		) \
 		|| exit 1; \
 	done;
+
+test-library-macros:
+	for platform in "$(PLATFORM_IOS)" "$(PLATFORM_MACOS)" "$(PLATFORM_MAC_CATALYST)" "$(PLATFORM_TVOS)" "$(PLATFORM_WATCHOS)"; do \
+		echo "\nTesting library-macros on $$platform\n" && \
+		(xcodebuild test \
+			-skipMacroValidation \
+			-configuration $(CONFIG) \
+			-workspace .github/package.xcworkspace \
+			-scheme InterceptionMacrosTests \
+			-destination platform="$$platform" | xcpretty && exit 0 \
+		) \
+		|| exit 1; \
+	done;
+
+test-macros:
+	echo "\nTesting macros\n" && \
+	(xcodebuild test \
+		-skipMacroValidation \
+		-configuration $(CONFIG) \
+		-workspace .github/package.xcworkspace \
+		-scheme InterceptionMacrosPluginTests \
+		-destination platform=macOS | xcpretty && exit 0 \
+	) \
+	|| exit 1;
 
 DOC_WARNINGS = $(shell xcodebuild clean docbuild \
 	-scheme Interception \
