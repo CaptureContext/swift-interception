@@ -17,9 +17,9 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "_SwiftInterceptionCustomSelectorsMacrosTests"
-               BuildableName = "_SwiftInterceptionCustomSelectorsMacrosTests"
-               BlueprintName = "_SwiftInterceptionCustomSelectorsMacrosTests"
+               BlueprintIdentifier = "InterceptionMacrosPluginTests"
+               BuildableName = "InterceptionMacrosPluginTests"
+               BlueprintName = "InterceptionMacrosPluginTests"
                ReferencedContainer = "container:">
             </BuildableReference>
          </TestableReference>

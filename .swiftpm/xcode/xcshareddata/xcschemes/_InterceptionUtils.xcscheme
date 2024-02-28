@@ -14,9 +14,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "_SwiftInterceptionCustomSelectors"
-               BuildableName = "_SwiftInterceptionCustomSelectors"
-               BlueprintName = "_SwiftInterceptionCustomSelectors"
+               BlueprintIdentifier = "_InterceptionUtils"
+               BuildableName = "_InterceptionUtils"
+               BlueprintName = "_InterceptionUtils"
                ReferencedContainer = "container:">
             </BuildableReference>
          </BuildActionEntry>
@@ -49,9 +49,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "_SwiftInterceptionCustomSelectors"
-            BuildableName = "_SwiftInterceptionCustomSelectors"
-            BlueprintName = "_SwiftInterceptionCustomSelectors"
+            BlueprintIdentifier = "_InterceptionUtils"
+            BuildableName = "_InterceptionUtils"
+            BlueprintName = "_InterceptionUtils"
             ReferencedContainer = "container:">
          </BuildableReference>
       </MacroExpansion>
