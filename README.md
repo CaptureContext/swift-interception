@@ -107,7 +107,7 @@ If you use SwiftPM for your project, you can add CombineInterception to your pac
 ```swift
 .package(
   url: "https://github.com/capturecontext/swift-interception.git", 
-  .upToNextMinor(from: "0.2.0")
+  .upToNextMinor(from: "0.3.0")
 )
 ```
 
@@ -126,8 +126,6 @@ Do not forget about target dependencies:
   package: "swift-interception"
 )
 ```
-
-
 
 ## License
 
