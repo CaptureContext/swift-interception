@@ -5,7 +5,7 @@ import InterceptionMacrosPlugin
 final class PropertySelectorTests: XCTestCase {
 	override func invokeTest() {
 		withMacroTesting(
-			isRecording: false,
+			record: false,
 			macros: [
 				"propertySelector": PropertySelectorMacro.self
 			]

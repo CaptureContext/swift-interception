@@ -5,14 +5,18 @@ import _InterceptionCustomSelectors
 
 /// Whether the runtime subclass has already been prepared for method
 /// interception.
+nonisolated(unsafe)
 private let interceptedKey = AssociationKey(default: false)
 
 /// Holds the method signature cache of the runtime subclass.
+nonisolated(unsafe)
 private let signatureCacheKey = AssociationKey<SignatureCache>()
 
 /// Holds the method selector cache of the runtime subclass.
+nonisolated(unsafe)
 private let selectorCacheKey = AssociationKey<SelectorCache>()
 
+nonisolated(unsafe)
 internal let noImplementation: IMP = unsafeBitCast(Int(0), to: IMP.self)
 
 extension NSObject {
@@ -327,6 +331,7 @@ private func setupMethodSignatureCaching(_ realClass: AnyClass, _ signatureCache
 
 @_spi(Internals)
 public struct SwiftInterceptionDefaultInterceptionHandlerKey: Hashable {
+	nonisolated(unsafe)
 	public static let shared: Self = .init()
 
 	private init() {}

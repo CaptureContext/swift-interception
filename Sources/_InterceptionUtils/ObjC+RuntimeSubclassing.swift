@@ -3,10 +3,12 @@ import Combine
 import Foundation
 
 /// Whether the runtime subclass has already been swizzled.
+nonisolated(unsafe)
 private let runtimeSubclassedKey = AssociationKey(default: false)
 
 /// A known combine-interception runtime subclass of the instance. `nil` if the runtime subclass
 /// has not been requested for the instance before.
+nonisolated(unsafe)
 private let knownRuntimeSubclassKey = AssociationKey<AnyClass?>(default: nil)
 
 extension NSObject {

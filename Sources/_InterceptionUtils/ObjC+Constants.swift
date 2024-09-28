@@ -9,10 +9,15 @@ public enum ObjCSelector {
 
 // Method encoding of the unavailable selectors.
 public enum ObjCMethodEncoding {
+	nonisolated(unsafe)
 	public static let forwardInvocation = extract("v@:@")
+
+	nonisolated(unsafe)
 	public static let methodSignatureForSelector = extract("v@::")
+
+	nonisolated(unsafe)
 	public static let getClass = extract("#@:")
-	
+
 	private static func extract(_ string: StaticString) -> UnsafePointer<CChar> {
 		return UnsafeRawPointer(string.utf8Start).assumingMemoryBound(to: CChar.self)
 	}
