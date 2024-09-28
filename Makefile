@@ -1,71 +1,102 @@
-CONFIG = debug
-PLATFORM_IOS = iOS Simulator,id=$(call udid_for,iOS 17.2,iPhone \d\+ Pro [^M])
-PLATFORM_MACOS = macOS
-PLATFORM_MAC_CATALYST = macOS,variant=Mac Catalyst
-PLATFORM_TVOS = tvOS Simulator,id=$(call udid_for,tvOS 17,TV)
-PLATFORM_WATCHOS = watchOS Simulator,id=$(call udid_for,watchOS 10,Watch)
+default:
+	$(error Missing command)
+	@exit 1
 
-default: test-all
+%:
+	$(error Unknown command: $@)
+	@exit 1
+
+TEST_RUNNER_CI ?= $(CI)
+MAKEFILE_PATH ?= ./swift-package-action/Makefile
+
+SCHEME ?= Interception
+PLATFORM ?= iOS
+CONFIG ?= Debug
+
+DERIVED_DATA=./DerivedData
+
+BOLD=\033[1m
+RESET=\033[0m
 
 test-all:
-	$(MAKE) test
+	$(MAKE) test-library
+	$(MAKE) test-library-macros
 	$(MAKE) test-docs
 
-test:
-	$(MAKE) CONFIG=debug test-library
-	$(MAKE) CONFIG=debug test-library-macros
-	$(MAKE) test-macros
-
 test-library:
-	for platform in "$(PLATFORM_IOS)" "$(PLATFORM_MACOS)" "$(PLATFORM_MAC_CATALYST)" "$(PLATFORM_TVOS)" "$(PLATFORM_WATCHOS)"; do \
-		echo "\nTesting library on $$platform\n" && \
-		(xcodebuild test \
-			-skipMacroValidation \
-			-configuration $(CONFIG) \
-			-workspace .github/package.xcworkspace \
-			-scheme InterceptionTests \
-			-destination platform="$$platform" | xcpretty && exit 0 \
-		) \
-		|| exit 1; \
-	done;
+	@make loop-platforms \
+		-f $(MAKEFILE_PATH) \
+		PLATFORMS=iOS,macOS,macCatalyst,watchOS,tvOS \
+		GOAL=xcodebuild \
+	  COMMAND=test \
+		SCHEME=$(SCHEME) \
+		CONFIG=$(CONFIG) \
+		DERIVED_DATA=$(DERIVED_DATA)
 
 test-library-macros:
-	for platform in "$(PLATFORM_IOS)" "$(PLATFORM_MACOS)" "$(PLATFORM_MAC_CATALYST)" "$(PLATFORM_TVOS)" "$(PLATFORM_WATCHOS)"; do \
-		echo "\nTesting library-macros on $$platform\n" && \
-		(xcodebuild test \
-			-skipMacroValidation \
-			-configuration $(CONFIG) \
-			-workspace .github/package.xcworkspace \
-			-scheme InterceptionMacrosTests \
-			-destination platform="$$platform" | xcpretty && exit 0 \
-		) \
-		|| exit 1; \
-	done;
+	@make loop-platforms \
+		-f $(MAKEFILE_PATH) \
+		PLATFORMS=iOS,macOS,macCatalyst,watchOS,tvOS \
+		GOAL=xcodebuild-macros \
+	  COMMAND=test \
+		SCHEME=$(SCHEME) \
+		CONFIG=$(CONFIG) \
+		DERIVED_DATA=$(DERIVED_DATA)
+	$(MAKE) xcodebuild-macros-plugin COMMAND=test PLATFORM=macOS
 
-test-macros:
-	echo "\nTesting macros\n" && \
-	(xcodebuild test \
-		-skipMacroValidation \
-		-configuration $(CONFIG) \
-		-workspace .github/package.xcworkspace \
-		-scheme InterceptionMacrosPluginTests \
-		-destination platform=macOS | xcpretty && exit 0 \
-	) \
-	|| exit 1;
+xcodebuild:
+	@make xcodebuild \
+		-f $(MAKEFILE_PATH) \
+		COMMAND=$(COMMAND) \
+		DERIVED_DATA=$(DERIVED_DATA) \
+		CONFIG=$(CONFIG) \
+		SCHEME=$(SCHEME) \
+		PLATFORM=$(PLATFORM)
 
-DOC_WARNINGS = $(shell xcodebuild clean docbuild \
-	-scheme Interception \
-	-destination platform="$(PLATFORM_IOS)" \
-	-quiet \
-	2>&1 \
-	| grep "couldn't be resolved to known documentation" \
-	| sed 's|$(PWD)|.|g' \
-	| tr '\n' '\1')
+xcodebuild-macros:
+	@make xcodebuild-macros \
+		-f $(MAKEFILE_PATH) \
+		COMMAND=$(COMMAND) \
+		DERIVED_DATA=$(DERIVED_DATA) \
+		CONFIG=$(CONFIG) \
+		SCHEME=$(SCHEME) \
+		PLATFORM=$(PLATFORM)
+
+xcodebuild-macros-plugin:
+	@make xcodebuild-macros-plugin \
+		-f $(MAKEFILE_PATH) \
+		COMMAND=$(COMMAND) \
+		DERIVED_DATA=$(DERIVED_DATA) \
+		CONFIG=$(CONFIG) \
+		SCHEME=$(SCHEME) \
+		PLATFORM=$(PLATFORM)
+
+build-for-library-evolution:
+	@make build-for-library-evolution \
+		-f $(MAKEFILE_PATH) \
+		SCHEME=$(SCHEME)
+
 test-docs:
-	@test "$(DOC_WARNINGS)" = "" \
-		|| (echo "xcodebuild docbuild failed:\n\n$(DOC_WARNINGS)" | tr '\1' '\n' \
-		&& exit 1)
+	@make test-docs \
+		-f $(MAKEFILE_PATH) \
+		SCHEME=$(SCHEME) \
+		PLATFORM=$(PLATFORM)
 
-define udid_for
-$(shell xcrun simctl list devices available '$(1)' | grep '$(2)' | sort -r | head -1 | awk -F '[()]' '{ print $$(NF-3) }')
-endef
+test-example:
+	@make test-example \
+		-f $(MAKEFILE_PATH) \
+		DERIVED_DATA=$(DERIVED_DATA) \
+		SCHEME=$(SCHEME) \
+		PLATFORM=$(PLATFORM)
+
+test-integration:
+	@make test-integration \
+		-f $(MAKEFILE_PATH) \
+		SCHEME=Integration \
+		PLATFORM=$(PLATFORM)
+
+benchmark:
+	@make benchmark -f $(MAKEFILE_PATH)
+
+format:
+	@make format -f $(MAKEFILE_PATH)
