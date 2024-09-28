@@ -5,7 +5,7 @@ import InterceptionMacrosPlugin
 final class MethodSelectorTests: XCTestCase {
 	override func invokeTest() {
 		withMacroTesting(
-			isRecording: false,
+			record: false,
 			macros: [
 				"methodSelector": MethodSelectorMacro.self
 			]

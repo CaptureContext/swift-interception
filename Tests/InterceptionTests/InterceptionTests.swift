@@ -142,7 +142,7 @@ final class InterceptionTests: XCTestCase {
 	}
 }
 
-fileprivate class Object: NSObject {
+fileprivate final class Object: NSObject, Sendable {
 	@discardableResult
 	@objc dynamic
 	func zero() -> Int { 0 }

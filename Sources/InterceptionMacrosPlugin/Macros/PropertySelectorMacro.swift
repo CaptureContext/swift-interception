@@ -10,7 +10,7 @@ public struct PropertySelectorMacro: ExpressionMacro {
 		of node: Node,
 		in context: Context
 	) -> ExprSyntax {
-		guard let arg = node.argumentList.first.map(\.expression)
+		guard let arg = node.arguments.first.map(\.expression)
 		else { fatalError("compiler bug: the macro does not have any arguments") }
 
 		return """
