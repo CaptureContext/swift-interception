@@ -1,8 +1,25 @@
 # swift-interception
 
-[![CI](https://github.com/CaptureContext/swift-interception/actions/workflows/ci.yml/badge.svg)](https://github.com/CaptureContext/swift-interception/actions/workflows/ci.yml) [![SwiftPM 5.9](https://img.shields.io/badge/swiftpm-5.9-ED523F.svg?style=flat)](https://swift.org/download/) ![Platforms](https://img.shields.io/badge/Platforms-iOS_13_|_macOS_10.15_|_Catalyst_13_|_tvOS_13_|_watchOS_7-ED523F.svg?style=flat) [![@capturecontext](https://img.shields.io/badge/contact-@capturecontext-1DA1F2.svg?style=flat&logo=twitter)](https://twitter.com/capture_context) 
+[![CI](https://github.com/capturecontext/swift-interception/actions/workflows/ci.yml/badge.svg)](https://github.com/capturecontext/swift-interception/actions/workflows/ci.yml) [![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Fcapturecontext%2Fswift-interception%2Fbadge%3Ftype%3Dswift-versions)](https://swiftpackageindex.com/capturecontext/swift-interception) [![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Fcapturecontext%2Fswift-interception%2Fbadge%3Ftype%3Dplatforms)](https://swiftpackageindex.com/capturecontext/swift-interception)
 
-Package for interception of objc selectors in Swift.
+A Swift package for intercepting Objective-C selector invocations on NSObject instances, enabling observation and transformation of delegate-style APIs.
+
+## Table of contents
+
+- [Motivation](#motivation)
+- [Usage](#usage)
+  - [Basic](#basic)
+  - [Library development](#library-development)
+- [Installation](#installation)
+- [License](#license)
+
+## Motivation
+
+Several frameworks, including `ReactiveCocoa`, `RxCocoa`, and `CombineCocoa`, use Objective-C selector interception internally to implement delegate proxies and similar abstractions.
+
+This package extracts a generic interception implementation from that approach and makes it available as a standalone dependency. The extracted code has been slightly generalized, supplemented with tests, and extended with a small set of ergonomic helpers for working with selectors.
+
+The result is a small package that provides convenient tools for setting up selector interception without requiring a dependency on a larger framework.
 
 ## Usage
 
@@ -42,7 +59,7 @@ navigationController.setInterceptionHandler(
 You can set up multiple interception handlers as well, just make sure that you use different keys for each handler
 
 ```swift
-import Intercexption
+import Interception
 
 object.setInterceptionHandler(
   for: _makeMethodSelector(
@@ -102,12 +119,12 @@ You can add Interception to an Xcode project by adding it as a package dependenc
 
 ### Recommended
 
-If you use SwiftPM for your project, you can add CombineInterception to your package file.
+If you use SwiftPM for your project, you can add Interception to your package file.
 
 ```swift
 .package(
   url: "https://github.com/capturecontext/swift-interception.git", 
-  .upToNextMinor(from: "0.3.0")
+  .upToNextMinor(from: "0.4.0")
 )
 ```
 
@@ -129,6 +146,6 @@ Do not forget about target dependencies:
 
 ## License
 
-This library is released under the MIT license. See [LICENCE](LICENCE) for details.
+This library is released under the MIT license. See [LICENSE](LICENSE) for details.
 
 See [ACKNOWLEDGMENTS](ACKNOWLEDGMENTS) for inspiration references and their licences.
