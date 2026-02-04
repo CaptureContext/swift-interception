@@ -1,20 +1,16 @@
-import XCTest
+import Testing
 import MacroTesting
 import InterceptionMacrosPlugin
 
-final class PropertySelectorTests: XCTestCase {
-	override func invokeTest() {
-		withMacroTesting(
-			record: false,
-			macros: [
-				"propertySelector": PropertySelectorMacro.self
-			]
-		) {
-			super.invokeTest()
-		}
-	}
-
-	func testApplication() {
+@Suite(
+	.macros(
+		["propertySelector": PropertySelectorMacro.self],
+		record: .missing // Record only missing snapshots
+	)
+)
+struct PropertySelectorTests {
+	@Test
+	func main() async throws {
 		assertMacro {
 			#"""
 			#propertySelector(\Object.someProperty)

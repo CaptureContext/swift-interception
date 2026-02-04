@@ -1,20 +1,16 @@
-import XCTest
+import Testing
 import MacroTesting
 import InterceptionMacrosPlugin
 
-final class MethodSelectorTests: XCTestCase {
-	override func invokeTest() {
-		withMacroTesting(
-			record: false,
-			macros: [
-				"methodSelector": MethodSelectorMacro.self
-			]
-		) {
-			super.invokeTest()
-		}
-	}
-
-	func testApplication() {
+@Suite(
+	.macros(
+		["methodSelector": MethodSelectorMacro.self],
+		record: .missing
+	)
+)
+struct MethodSelectorTests {
+	@Test
+	func main() async throws {
 		assertMacro {
 			"""
 			#methodSelector(Object.someFunc)
