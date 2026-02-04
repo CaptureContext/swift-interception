@@ -10,5 +10,9 @@ builder:
 	- platform: watchos
 		scheme: Interception
 
+	- platform: macos-xcodebuild
+		scheme: InterceptionMacrosPlugin
+
 	- documentation_targets:
 		- Interception
+		- InterceptionMacros
