@@ -1,5 +1,14 @@
 version: 1
 builder:
-  configs:
-  - documentation_targets: [Interception]
-    swift_version: 5.10
+	configs:
+	- platform: ios
+		scheme: Interception
+	- platform: macos-xcodebuild
+		scheme: Interception
+	- platform: tvos
+		scheme: Interception
+	- platform: watchos
+		scheme: Interception
+
+	- documentation_targets:
+		- Interception
