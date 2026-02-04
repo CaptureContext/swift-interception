@@ -14,128 +14,52 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  test-library:
-    name: test-library
+  xcodebuild:
+    name: xcodebuild
     if: |
       !contains(github.event.head_commit.message, '[ci skip]') &&
       !contains(github.event.head_commit.message, '[ci skip test]') &&
-      !contains(github.event.head_commit.message, '[ci skip library-swift-latest]')
-    runs-on: macos-14
+      !contains(github.event.head_commit.message, '[ci skip test_macos]')
+    runs-on: macos-latest
     strategy:
-      fail-fast: false
       matrix:
-        platform: [iOS, macOS, tvOS, watchOS, macCatalyst]
-        xcode: ['15.4', '16.1']
-        config: [Debug]
-        command: [test]
-        scheme: [Interception]
+        platform: [iOS, macOS, macCatalyst, tvOS, watchOS]
+        xcode: ['26.2']
+    timeout-minutes: 30
     steps:
-      - uses: actions/checkout@v4
-        with:
-          submodules: true
-      - name: Select Xcode ${{ matrix.xcode }}
-        run: sudo xcode-select -s /Applications/Xcode_${{ matrix.xcode }}.app
-      - name: Cache derived data
-        uses: actions/cache@v3
-        with:
-          path: |
-            ~/.derivedData
-          key: |
-            deriveddata-xcodebuild-${{ matrix.platform }}-${{ matrix.xcode }}-${{ matrix.command }}-${{ hashFiles('**/Sources/**/*.swift', '**/Tests/**/*.swift') }}
-          restore-keys: |
-            deriveddata-xcodebuild-${{ matrix.platform }}-${{ matrix.xcode }}-${{ matrix.command }}-
-      - name: Set IgnoreFileSystemDeviceInodeChanges flag 
-        run: defaults write com.apple.dt.XCBuild IgnoreFileSystemDeviceInodeChanges -bool YES
-      - name: Update mtime for incremental builds 
-        uses: chetan/git-restore-mtime-action@v2
-      - name: test-library (${{ matrix.config }})
-        uses: capturecontext/swift-package-action@1.0
-        with:
-          command: xcodebuild
-          subcommand: ${{ matrix.command }}
-          platform: ${{ matrix.platform }}
-          scheme: ${{ matrix.scheme }}
-          config: ${{ matrix.config }}
-  test-library-macros:
-    name: test-library-macros
+    - uses: actions/checkout@v6
+    - name: Build
+      uses: capturecontext/swift-package-action/build@3.0-beta.8
+      with:
+        xcode: ${{ matrix.xcode }}
+        cache-derived-data: true
+        action: xcodebuild
+        platform: ${{ matrix.platform }}
+        workspace: .swiftpm/xcode/package.xcworkspace
+        scheme: swift-associated-objects-Package
+        config: Debug
+
+  xcodebuild-test:
+    name: xcodebuild-test
     if: |
       !contains(github.event.head_commit.message, '[ci skip]') &&
       !contains(github.event.head_commit.message, '[ci skip test]') &&
-      !contains(github.event.head_commit.message, '[ci skip library-swift-latest]')
-    runs-on: macos-14
-    strategy:
-      fail-fast: false
-      matrix:
-        platform: [iOS, macOS, tvOS, watchOS, macCatalyst]
-        xcode: ['15.4', '16.1']
-        config: [Debug]
-        command: [test]
-        scheme: [Interception]
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          submodules: true
-      - name: Select Xcode ${{ matrix.xcode }}
-        run: sudo xcode-select -s /Applications/Xcode_${{ matrix.xcode }}.app
-      - name: Cache derived data
-        uses: actions/cache@v3
-        with:
-          path: |
-            ~/.derivedData
-          key: |
-            deriveddata-xcodebuild-${{ matrix.platform }}-${{ matrix.xcode }}-${{ matrix.command }}-${{ hashFiles('**/Sources/**/*.swift', '**/Tests/**/*.swift') }}
-          restore-keys: |
-            deriveddata-xcodebuild-${{ matrix.platform }}-${{ matrix.xcode }}-${{ matrix.command }}-
-      - name: Set IgnoreFileSystemDeviceInodeChanges flag 
-        run: defaults write com.apple.dt.XCBuild IgnoreFileSystemDeviceInodeChanges -bool YES
-      - name: Update mtime for incremental builds 
-        uses: chetan/git-restore-mtime-action@v2
-      - name: test-library-macros (${{ matrix.config }})
-        uses: capturecontext/swift-package-action@1.0
-        with:
-          command: xcodebuild-macros
-          subcommand: ${{ matrix.command }}
-          platform: ${{ matrix.platform }}
-          scheme: ${{ matrix.scheme }}
-          config: ${{ matrix.config }}
-  test-library-macros-plugin:
-    name: test-library-macros-plugin
-    if: |
-      !contains(github.event.head_commit.message, '[ci skip]') &&
-      !contains(github.event.head_commit.message, '[ci skip test]') &&
-      !contains(github.event.head_commit.message, '[ci skip library-swift-latest]')
-    runs-on: macos-14
+      !contains(github.event.head_commit.message, '[ci skip test_macos]')
+    runs-on: macos-latest
     strategy:
       matrix:
         platform: [macOS]
-        xcode: ['16.1']
-        command: [test]
-        config: [Debug]
-        scheme: [Interception]
+        xcode: ['26.2']
+    timeout-minutes: 30
     steps:
-      - uses: actions/checkout@v4
-        with:
-          submodules: true
-      - name: Select Xcode ${{ matrix.xcode }}
-        run: sudo xcode-select -s /Applications/Xcode_${{ matrix.xcode }}.app
-      - name: Cache derived data
-        uses: actions/cache@v3
-        with:
-          path: |
-            ~/.derivedData
-          key: |
-            deriveddata-xcodebuild-${{ matrix.platform }}-${{ matrix.xcode }}-${{ matrix.command }}-${{ hashFiles('**/Sources/**/*.swift', '**/Tests/**/*.swift') }}
-          restore-keys: |
-            deriveddata-xcodebuild-${{ matrix.platform }}-${{ matrix.xcode }}-${{ matrix.command }}-
-      - name: Set IgnoreFileSystemDeviceInodeChanges flag 
-        run: defaults write com.apple.dt.XCBuild IgnoreFileSystemDeviceInodeChanges -bool YES
-      - name: Update mtime for incremental builds 
-        uses: chetan/git-restore-mtime-action@v2
-      - name: test-library-macros-plugin (${{ matrix.config }})
-        uses: capturecontext/swift-package-action@1.0
-        with:
-          command: xcodebuild-macros-plugin
-          subcommand: ${{ matrix.command }}
-          platform: ${{ matrix.platform }}
-          scheme: ${{ matrix.scheme }}
-          config: ${{ matrix.config }}
+    - uses: actions/checkout@v6
+    - name: Test
+      uses: capturecontext/swift-package-action/build@3.0-beta.8
+      with:
+        xcode: ${{ matrix.xcode }}
+        cache-derived-data: true
+        action: xcodebuild-test
+        platform: ${{ matrix.platform }}
+        workspace: .swiftpm/xcode/package.xcworkspace
+        scheme: swift-interception-Package
+        config: Debug
