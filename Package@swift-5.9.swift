@@ -1,4 +1,4 @@
-// swift-tools-version:6.0
+// swift-tools-version: 5.9
 
 import PackageDescription
 import CompilerPluginSupport
@@ -42,11 +42,11 @@ let package = Package(
 	dependencies: [
 		.package(
 			url: "https://github.com/stackotter/swift-macro-toolkit.git",
-			.upToNextMinor(from: "0.5.0")
+			"0.5.0"..<"0.9.0",
 		),
 		.package(
 			url: "https://github.com/pointfreeco/swift-macro-testing.git",
-			.upToNextMinor(from: "0.5.2")
+			.upToNextMinor(from: "0.6.0")
 		)
 	],
 	targets: [
@@ -107,14 +107,5 @@ let package = Package(
 				.target(name: "InterceptionMacros"),
 			]
 		),
-	],
-	swiftLanguageModes: [.v6]
+	]
 )
-
-for target in package.targets where target.type == .system || target.type == .test {
-	target.swiftSettings?.append(contentsOf: [
-		.swiftLanguageMode(.v5),
-		.enableExperimentalFeature("StrictConcurrency"),
-		.enableUpcomingFeature("InferSendableFromCaptures"),
-	])
-}
