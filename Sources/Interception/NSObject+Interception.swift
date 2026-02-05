@@ -1,4 +1,4 @@
-#if canImport(Combine)
+#if appleOS
 import Foundation
 import _InterceptionUtils
 import _InterceptionCustomSelectors

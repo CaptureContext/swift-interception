@@ -1,3 +1,4 @@
+#if canImport(Darwin)
 import Foundation
 
 public func synchronized<Result>(
@@ -8,3 +9,4 @@ public func synchronized<Result>(
 	defer { objc_sync_exit(token) }
 	return try execute()
 }
+#endif

@@ -1,5 +1,6 @@
 import Foundation
 
+#if appleOS
 extension KeyPath {
 	public var getterSelector: Selector? {
 		guard let property = _kvcKeyPathString else { return nil }
@@ -13,3 +14,4 @@ extension WritableKeyPath {
 		return Selector("set" + property.first!.uppercased() + String(property.dropFirst()) + ":")
 	}
 }
+#endif

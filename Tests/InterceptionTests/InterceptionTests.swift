@@ -1,4 +1,6 @@
 import Testing
+
+#if appleOS
 import Foundation
 @testable import Interception
 
@@ -232,3 +234,4 @@ fileprivate struct Pair<Left: Equatable, Right: Equatable>: Equatable {
 		self.right = pair.1
 	}
 }
+#endif

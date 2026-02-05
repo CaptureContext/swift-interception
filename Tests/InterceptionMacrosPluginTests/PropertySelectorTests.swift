@@ -1,4 +1,6 @@
 import Testing
+
+#if appleOS
 import MacroTesting
 import InterceptionMacrosPlugin
 
@@ -22,3 +24,4 @@ struct PropertySelectorTests {
 		}
 	}
 }
+#endif

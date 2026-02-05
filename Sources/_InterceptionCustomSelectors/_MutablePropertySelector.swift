@@ -1,3 +1,4 @@
+#if appleOS
 import Foundation
 
 public protocol _MutablePropertySelectorProtocol<Value>: _PropertySelectorProtocol {
@@ -43,3 +44,4 @@ public func _unsafeMakePropertySelector<Object: NSObject, Value>(
 ) -> _MutablePropertySelector<Value> {
 	return .init(keyPath)!
 }
+#endif

@@ -1,3 +1,4 @@
+#if canImport(Darwin)
 import Foundation
 
 // Unavailable selectors in Swift.
@@ -52,3 +53,4 @@ public enum ObjCTypeEncoding: Int8 {
 	case void = 118
 	case undefined = -1
 }
+#endif

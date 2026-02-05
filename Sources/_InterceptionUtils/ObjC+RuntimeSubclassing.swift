@@ -1,4 +1,4 @@
-#if canImport(Combine)
+#if canImport(Combine) && canImport(_InterceptionUtilsObjc)
 import Combine
 import Foundation
 

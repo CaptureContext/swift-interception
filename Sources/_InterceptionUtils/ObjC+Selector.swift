@@ -1,3 +1,4 @@
+#if canImport(Darwin)
 import Foundation
 
 extension Selector {
@@ -43,3 +44,4 @@ extension Selector {
 		return sel_registerName(cString)
 	}
 }
+#endif

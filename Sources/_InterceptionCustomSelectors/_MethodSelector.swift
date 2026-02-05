@@ -1,3 +1,4 @@
+#if appleOS
 import Foundation
 
 public protocol _MethodSelectorProtocol<Args, Output> {
@@ -83,3 +84,4 @@ public func _makeMethodSelector<Object, each Arg, Output>(
 ) -> _MethodSelector<(repeat each Arg), Output> {
 	return ._unchecked(selector)
 }
+#endif

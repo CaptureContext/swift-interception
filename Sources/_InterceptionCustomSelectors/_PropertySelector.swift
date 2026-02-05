@@ -1,3 +1,4 @@
+#if appleOS
 import Foundation
 
 public protocol _PropertySelectorProtocol<Value> {
@@ -27,3 +28,4 @@ public func _unsafeMakePropertySelector<Object: NSObject, Value>(
 ) -> _ReadonlyPropertySelector<Value> {
 	return .init(keyPath)!
 }
+#endif

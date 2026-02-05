@@ -1,3 +1,4 @@
+#if canImport(Darwin)
 import Foundation
 
 extension NSObject {
@@ -9,3 +10,4 @@ extension NSObject {
 		return (self as AnyObject).objcClass
 	}
 }
+#endif

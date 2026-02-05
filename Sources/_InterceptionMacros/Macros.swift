@@ -1,4 +1,6 @@
 import Foundation
+
+#if appleOS
 import _InterceptionCustomSelectors
 
 // MARK: - PropertySelectors
@@ -70,3 +72,4 @@ public macro methodSelector<Object, each Arg, Output>(
 	_: (Object) -> (repeat each Arg) -> Output
 ) -> _MethodSelector<(repeat each Arg), Output> =
 #externalMacro(module: "InterceptionMacrosPlugin", type: "MethodSelectorMacro")
+#endif

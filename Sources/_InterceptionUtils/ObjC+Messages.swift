@@ -1,3 +1,4 @@
+#if canImport(Darwin)
 // Unavailable classes like `NSInvocation` can still be passed into Swift as
 // `AnyClass` and `AnyObject`, and receive messages as `AnyClass` and
 // `AnyObject` existentials.
@@ -88,3 +89,4 @@ public func copyReturnValue<T>(of type: T.Type = T.self, from invocation: AnyObj
 	invocation.objcCopyReturnValue(to: pointer)
 	return pointer.assumingMemoryBound(to: type).pointee
 }
+#endif

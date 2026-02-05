@@ -1,3 +1,4 @@
+#if canImport(Darwin)
 import Foundation
 
 /// Search in `class` for any method that matches the supplied selector without
@@ -25,3 +26,4 @@ public func class_getImmediateMethod(_ `class`: AnyClass, _ selector: Selector) 
 	
 	return nil
 }
+#endif

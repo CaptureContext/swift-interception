@@ -1,3 +1,4 @@
+#if canImport(Darwin)
 import Foundation
 import _InterceptionUtilsObjc
 
@@ -157,3 +158,4 @@ public func unsafeSetAssociatedValue<Value>(
 		policy
 	)
 }
+#endif

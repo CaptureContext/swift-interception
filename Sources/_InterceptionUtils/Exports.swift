@@ -1,3 +1,5 @@
-#if canImport(_InterceptionUtilsObjc)
+import Foundation
+
+#if appleOS
 @_exported import _InterceptionUtilsObjc
 #endif

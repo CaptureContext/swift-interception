@@ -3,6 +3,20 @@
 import PackageDescription
 import CompilerPluginSupport
 
+let applePlatforms: [Platform] = [
+	.iOS,
+	.macOS,
+	.macCatalyst,
+	.watchOS,
+	.tvOS,
+	.visionOS
+]
+
+let define_appleOS: SwiftSetting = .define(
+	"appleOS",
+	.when(platforms: applePlatforms)
+)
+
 let package = Package(
 	name: "swift-interception",
 	platforms: [
@@ -55,21 +69,38 @@ let package = Package(
 			dependencies: [
 				.target(name: "InterceptionMacrosPlugin"),
 				.target(name: "_InterceptionCustomSelectors")
+			],
+			swiftSettings: [
+				define_appleOS
 			]
 		),
-		.target(name: "_InterceptionCustomSelectors"),
-		.target(name: "_InterceptionUtilsObjc"),
+		.target(
+			name: "_InterceptionCustomSelectors",
+			swiftSettings: [
+				define_appleOS
+			]
+		),
 		.target(
 			name: "_InterceptionUtils",
 			dependencies: [
-				.target(name: "_InterceptionUtilsObjc"),
+				.target(
+					name: "_InterceptionUtilsObjc",
+					condition: .when(platforms: applePlatforms)
+				),
+			],
+			swiftSettings: [
+				define_appleOS
 			]
 		),
+		.target(name: "_InterceptionUtilsObjc"),
 		.target(
 			name: "Interception",
 			dependencies: [
 				.target(name: "_InterceptionCustomSelectors"),
 				.target(name: "_InterceptionUtils"),
+			],
+			swiftSettings: [
+				define_appleOS
 			]
 		),
 		.target(
@@ -93,18 +124,27 @@ let package = Package(
 			dependencies: [
 				.target(name: "InterceptionMacrosPlugin"),
 				.product(name: "MacroTesting", package: "swift-macro-testing"),
+			],
+			swiftSettings: [
+				define_appleOS
 			]
 		),
 		.testTarget(
 			name: "InterceptionTests",
 			dependencies: [
 				.target(name: "Interception"),
+			],
+			swiftSettings: [
+				define_appleOS
 			]
 		),
 		.testTarget(
 			name: "InterceptionMacrosTests",
 			dependencies: [
 				.target(name: "InterceptionMacros"),
+			],
+			swiftSettings: [
+				define_appleOS
 			]
 		),
 	],
