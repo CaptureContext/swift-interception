@@ -1,4 +1,4 @@
-#if canImport(Darwin)
+#if canImport(Darwin) && canImport(ObjectiveC)
 import Foundation
 
 /// Search in `class` for any method that matches the supplied selector without

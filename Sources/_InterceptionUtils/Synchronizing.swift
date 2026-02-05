@@ -1,4 +1,4 @@
-#if canImport(Darwin)
+#if canImport(Darwin) && canImport(ObjectiveC)
 import Foundation
 
 public func synchronized<Result>(

@@ -1,4 +1,4 @@
-#if appleOS
+#if canImport(Darwin) && canImport(ObjectiveC)
 import Foundation
 
 public protocol _MethodSelectorProtocol<Args, Output> {

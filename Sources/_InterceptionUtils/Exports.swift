@@ -1,5 +1,5 @@
 import Foundation
 
-#if appleOS
+#if canImport(Darwin) && canImport(ObjectiveC)
 @_exported import _InterceptionUtilsObjc
 #endif

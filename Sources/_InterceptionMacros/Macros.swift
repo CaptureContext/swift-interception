@@ -1,6 +1,6 @@
 import Foundation
 
-#if appleOS
+#if canImport(Darwin) && canImport(ObjectiveC)
 import _InterceptionCustomSelectors
 
 // MARK: - PropertySelectors

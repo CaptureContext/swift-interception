@@ -1,3 +1,4 @@
+#if __has_include(<objc/runtime.h>) && __has_include(<objc/message.h>)
 #import <objc/runtime.h>
 #import <objc/message.h>
 
@@ -12,3 +13,4 @@ void _swiftInterceptionSetAssociatedObject(
 	__unsafe_unretained id obj = (__bridge typeof(obj)) object;
 	objc_setAssociatedObject(obj, key, value, policy);
 }
+#endif

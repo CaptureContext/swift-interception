@@ -1,6 +1,8 @@
+#import <Foundation/Foundation.h>
+
+#if __has_include(<objc/runtime.h>) && __has_include(<objc/message.h>)
 #import <objc/runtime.h>
 #import <objc/message.h>
-#import <Foundation/Foundation.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -16,3 +18,4 @@ void _swiftInterceptionSetAssociatedObject(
 );
 
 NS_ASSUME_NONNULL_END
+#endif

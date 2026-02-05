@@ -1,6 +1,6 @@
 import Foundation
 
-#if appleOS
+#if canImport(Darwin) && canImport(ObjectiveC)
 extension KeyPath {
 	public var getterSelector: Selector? {
 		guard let property = _kvcKeyPathString else { return nil }

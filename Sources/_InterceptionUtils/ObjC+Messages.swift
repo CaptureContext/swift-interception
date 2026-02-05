@@ -1,4 +1,4 @@
-#if canImport(Darwin)
+#if canImport(Darwin) && canImport(ObjectiveC)
 // Unavailable classes like `NSInvocation` can still be passed into Swift as
 // `AnyClass` and `AnyObject`, and receive messages as `AnyClass` and
 // `AnyObject` existentials.
