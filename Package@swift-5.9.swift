@@ -51,12 +51,12 @@ let package = Package(
 	dependencies: [
 		.package(
 			url: "https://github.com/stackotter/swift-macro-toolkit.git",
-			"0.5.0"..<"0.9.0",
+			"0.5.0"..<"0.9.0"
 		),
 		.package(
 			url: "https://github.com/pointfreeco/swift-macro-testing.git",
 			.upToNextMinor(from: "0.6.0")
-		)
+		),
 	],
 	targets: [
 		.target(
