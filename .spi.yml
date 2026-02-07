@@ -1,26 +1,17 @@
 version: 1
 builder:
-  configs:
   - platform: ios
-    scheme: Interception
-
   - platform: macos-spm
-    scheme: Interception
-
   - platform: macos-xcodebuild
-    scheme: Interception
-
   - platform: tvos
-    scheme: Interception
-
   - platform: watchos
-    scheme: Interception
+  - platform: android
 
-  - platform: macos-spm
-    scheme: InterceptionMacrosPlugin
+  - platform: linux
+    swift_version: '5.9'
 
-  - platform: macos-xcodebuild
-    scheme: InterceptionMacrosPlugin
+  - platform: linux
+    swift_version: '6.0'
 
   - documentation_targets:
     - Interception
