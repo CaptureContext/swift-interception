@@ -1,0 +1,21 @@
+// swift-interface-format-version: 1.0
+// swift-compiler-version: Apple Swift version 6.4 (swiftlang-6.4.0.25.4 clang-2100.3.25.1)
+// swift-module-flags: -target arm64-apple-macosx12.0 -enable-objc-interop -language-mode 6 -Onone -module-name _InterceptionMacros -package-name swift_interception
+// swift-module-flags-ignorable:  -formal-cxx-interoperability-mode=off -interface-compiler-version 6.4
+import Foundation
+import Swift
+import _Concurrency
+import _InterceptionCustomSelectors
+import _StringProcessing
+import _SwiftConcurrencyShims
+@freestanding(expression) public macro propertySelector<Object, Value>(_: Swift::KeyPath<Object, Value>) -> _InterceptionCustomSelectors::_ReadonlyPropertySelector<Value> = #externalMacro(module: "InterceptionMacrosPlugin", type: "PropertySelectorMacro") where Object : ObjectiveC::NSObject
+@freestanding(expression) public macro propertySelector<Object, Value>(_: Swift::WritableKeyPath<Object, Value>) -> _InterceptionCustomSelectors::_MutablePropertySelector<Value> = #externalMacro(module: "InterceptionMacrosPlugin", type: "PropertySelectorMacro") where Object : ObjectiveC::NSObject
+@freestanding(expression) public macro methodSelector<Output>(_: (() -> Output)?) -> _InterceptionCustomSelectors::_MethodSelector<Swift::Void, Output> = #externalMacro(module: "InterceptionMacrosPlugin", type: "MethodSelectorMacro")
+@freestanding(expression) public macro methodSelector<Arg, Output>(_: ((Arg) -> Output)?) -> _InterceptionCustomSelectors::_MethodSelector<Arg, Output> = #externalMacro(module: "InterceptionMacrosPlugin", type: "MethodSelectorMacro")
+@freestanding(expression) public macro methodSelector<each Arg, Output>(_: ((repeat each Arg) -> Output)?) -> _InterceptionCustomSelectors::_MethodSelector<(repeat each Arg), Output> = #externalMacro(module: "InterceptionMacrosPlugin", type: "MethodSelectorMacro")
+@freestanding(expression) public macro methodSelector<Object, Output>(_: (Object) -> (() -> Output)?) -> _InterceptionCustomSelectors::_MethodSelector<Swift::Void, Output> = #externalMacro(module: "InterceptionMacrosPlugin", type: "MethodSelectorMacro")
+@freestanding(expression) public macro methodSelector<Object, Arg, Output>(_: (Object) -> ((Arg) -> Output)?) -> _InterceptionCustomSelectors::_MethodSelector<Arg, Output> = #externalMacro(module: "InterceptionMacrosPlugin", type: "MethodSelectorMacro")
+@freestanding(expression) public macro methodSelector<Object, each Arg, Output>(_: (Object) -> ((repeat each Arg) -> Output)?) -> _InterceptionCustomSelectors::_MethodSelector<(repeat each Arg), Output> = #externalMacro(module: "InterceptionMacrosPlugin", type: "MethodSelectorMacro")
+@freestanding(expression) public macro methodSelector<Object, Output>(_: (Object) -> () -> Output) -> _InterceptionCustomSelectors::_MethodSelector<Swift::Void, Output> = #externalMacro(module: "InterceptionMacrosPlugin", type: "MethodSelectorMacro")
+@freestanding(expression) public macro methodSelector<Object, Arg, Output>(_: (Object) -> (Arg) -> Output) -> _InterceptionCustomSelectors::_MethodSelector<Arg, Output> = #externalMacro(module: "InterceptionMacrosPlugin", type: "MethodSelectorMacro")
+@freestanding(expression) public macro methodSelector<Object, each Arg, Output>(_: (Object) -> (repeat each Arg) -> Output) -> _InterceptionCustomSelectors::_MethodSelector<(repeat each Arg), Output> = #externalMacro(module: "InterceptionMacrosPlugin", type: "MethodSelectorMacro")
